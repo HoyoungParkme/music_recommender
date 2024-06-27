@@ -1,2 +1,4 @@
 Django==3.2.8
 google-api-python-client
+gunicorn
+django-heroku
