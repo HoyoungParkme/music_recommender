@@ -2,3 +2,8 @@ django
 gunicorn
 django-heroku
 psycopg2-binary
+backports.zoneinfo; python_version < "3.9"
+sqlparse>=0.3.1
+asgiref<4,>=3.6.0
+packaging
+whitenoise
