@@ -137,15 +137,18 @@
             const formData = new FormData();
             formData.append('image', blob, 'captured_image.jpg');
             
-            fetch("/capture_face", {
+            fetch("{% url 'capture_face' %}", {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     alert('얼굴 인식 성공! 감정: ' + data.emotion);
-                    window.opener.location.href = "/my_emotions?emotion=" + encodeURIComponent(data.emotion) + "&image_path=" + encodeURIComponent(data.image_path);
+                    window.opener.location.href = "{% url 'my_emotions' %}?emotion=" + encodeURIComponent(data.emotion) + "&image_path=" + encodeURIComponent(data.image_path);
                     window.close();
                 } else {
                     alert('얼굴 인식 실패: ' + data.error);

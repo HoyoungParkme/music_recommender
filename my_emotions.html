@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Emotions</title>
+    <title>Recommended Playlist</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -12,99 +12,110 @@
             background-color: #ffffff;
             margin: 0;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .container {
             max-width: 800px;
             margin: auto;
+            text-align: center;
         }
         h1 {
             color: #000;
             font-size: 2.8rem;
             font-weight: 700;
             margin-bottom: 20px;
-            text-align: center;
         }
-        .project {
-            margin-bottom: 40px;
-        }
-        .project img {
-            width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
-            padding: 5px;
-            background-color: #f9f9f9;
-        }
-        .project-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
+        h2 {
+            color: #777;
             font-size: 1.5rem;
-            font-weight: 500;
-            color: #333;
+            font-weight: 400;
+            margin-bottom: 20px;
         }
-        .instructions {
-            text-align: left;
-            margin-top: 10px;
+        h2 .emotion {
+            font-size: 1.3rem;
+        }
+        .emotion-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .emotion-buttons button {
             font-size: 1rem;
-            color: #444;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: hsl(226, 19%, 79%);
+            color: white;
         }
-        .instructions ol {
-            padding-left: 20px;
-        }
-        .instructions ol li {
+        .profile-picture {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
             margin-bottom: 20px;
         }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background: #f8f9fa;
+        .video-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        iframe {
             width: 100%;
-            margin-top: 40px;
+            max-width: 720px;
+            height: 405px;
         }
-        footer p {
-            color: #666;
-            font-size: 0.9rem;
-            margin: 0;
+        .navigation-links {
+            margin-top: 20px;
+            margin-bottom: 30px; 
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
-        .nav-link {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .nav-link a {
+        .navigation-links a {
             color: #007bff;
             text-decoration: none;
             font-size: 1.2rem;
         }
-        .nav-link a:hover {
+        .navigation-links a:hover {
             text-decoration: underline;
         }
-        .btn-container {
+        footer {
+            margin-top: 40px;
             text-align: center;
-            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        .btn-active {
+            background-color: #007bff !important;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="nav-link">
-            <a href="index.html">Home</a>
+        <div class="navigation-links">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'face_recognition' %}">Face Scan</a>
         </div>
-        <h1>My Emotions</h1>
-        <div class="project">
-            <img src="static/captured_image.jpg" alt="Captured Image">
-            <div class="project-title">
-                <span>감정 분석 결과</span>
-            </div>
-            <div class="instructions">
-                <ol>
-                    <li>감정: 기쁨</li>
-                    <li>추천 음악: 기쁨을 느낄 때 듣기 좋은 음악</li>
-                </ol>
-            </div>
+        <h1>Playlist</h1>
+        <img src="{{ image_path }}" alt="촬영된 이미지" class="profile-picture">
+        <h2>Emotion: <span class="emotion" id="emotion"></span></h2>
+        <div class="emotion-buttons">
+            <button class="btn btn-primary" onclick="changeVideo('분노')">분노</button>
+            <button class="btn btn-primary" onclick="changeVideo('당황')">당황</button>
+            <button class="btn btn-primary" onclick="changeVideo('불안')">불안</button>
+            <button class="btn btn-primary" onclick="changeVideo('기쁨')">기쁨</button>
+            <button class="btn btn-primary" onclick="changeVideo('슬픔')">슬픔</button>
+            <button class="btn btn-primary" onclick="changeVideo('상처')">상처</button>
+            <button class="btn btn-primary" onclick="changeVideo('평범')">평범</button>
         </div>
-        <div class="btn-container">
-            <button class="btn btn-primary">다시 분석하기</button>
+        <div class="video-container">
+            <iframe id="ytplayer" type="text/html" width="720" height="405" src="https://www.youtube.com/embed/71hZutqP_cM" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -115,9 +126,47 @@
             GitHub: <a href="https://github.com/HoyoungParkme" target="_blank">https://github.com/HoyoungParkme</a>
         </p>
     </footer>
+    
+    <script>
+        function changeVideo(emotion) {
+            var videoMap = {
+                '분노': 'v4P-gw5Fc6Q',
+                '당황': 'ks_wHC9rg3Q',
+                '불안': 'm7GOmncIU5A',
+                '기쁨': 'Cn1foQZVz9c',
+                '슬픔': 'sH8TL4ENTis',
+                '상처': 'PScbNENeSHs',
+                '평범': 't3f4xlk9GxU'
+            };
+            var videoId = videoMap[emotion];
+            var iframe = document.getElementById('ytplayer');
+            iframe.src = "https://www.youtube.com/embed/" + videoId;
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            var buttons = document.querySelectorAll('.emotion-buttons button');
+            buttons.forEach(function(button) {
+                button.classList.remove('btn-active');
+            });
+
+            var activeButton = Array.from(buttons).find(button => button.textContent === emotion);
+            if (activeButton) {
+                activeButton.classList.add('btn-active');
+            }
+        }
+
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                emotion: params.get('emotion') || '기쁨', // Default to '기쁨' if no emotion is found
+                imagePath: params.get('image_path') || '{{ image_path }}'
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const { emotion, imagePath } = getQueryParams();
+            document.getElementById('emotion').textContent = emotion;
+            document.querySelector('.profile-picture').src = imagePath;
+            changeVideo(emotion);
+        });
+    </script>
 </body>
 </html>
