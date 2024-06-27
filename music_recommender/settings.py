@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import django_heroku
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-2lrm)@6ao73@%ebu)q1erzt46i7rby#)vljqx@05$7@0a%lt^r"
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-2lrm)@6ao73@%ebu)q1erzt46i7rby#)vljqx@05$7@0a%lt^r')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['your-heroku-app-name.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +38,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "music_recommender.urls"
@@ -64,12 +66,11 @@ WSGI_APPLICATION = "music_recommender.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db.sqlite3",
-    }
+    'default': dj_database_url.config(
+        default='postgres://your_db_user:your_db_password@your_db_host:your_db_port/your_db_name',
+        conn_max_age=600
+    )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -107,6 +108,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (uploads)
 MEDIA_URL = '/media/'
@@ -118,8 +121,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # YouTube API Key
-YOUTUBE_API_KEY = 'AIzaSyB-a6SjgPok8-SAibnh0Tmzv23iyGU6T34'  # 여기에 제공해주신 API 키를 입력하세요
+YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', 'AIzaSyB-a6SjgPok8-SAibnh0Tmzv23iyGU6T34')
+
 # 모델 파일 경로 설정
 MODEL_PATH = BASE_DIR / 'scripts/models/image_model.keras'
 
+# Activate Django-Heroku.
 django_heroku.settings(locals())
