@@ -99,11 +99,11 @@
 <body>
     <div class="container">
         <div class="navigation-links">
-            <a href="{% url 'index' %}">Home</a>
-            <a href="{% url 'face_recognition' %}">Face Scan</a>
+            <a href="index.html">Home</a>
+            <a href="face_recognition.html">Face Scan</a>
         </div>
         <h1>Playlist</h1>
-        <img src="{{ image_path }}" alt="촬영된 이미지" class="profile-picture">
+        <img src="static/example_face_recognition.png" alt="촬영된 이미지" class="profile-picture" id="profile-picture">
         <h2>Emotion: <span class="emotion" id="emotion"></span></h2>
         <div class="emotion-buttons">
             <button class="btn btn-primary" onclick="changeVideo('분노')">분노</button>
@@ -157,14 +157,14 @@
             const params = new URLSearchParams(window.location.search);
             return {
                 emotion: params.get('emotion') || '기쁨', // Default to '기쁨' if no emotion is found
-                imagePath: params.get('image_path') || '{{ image_path }}'
+                imagePath: params.get('image_path') || 'static/example_face_recognition.png'
             };
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             const { emotion, imagePath } = getQueryParams();
             document.getElementById('emotion').textContent = emotion;
-            document.querySelector('.profile-picture').src = imagePath;
+            document.getElementById('profile-picture').src = imagePath;
             changeVideo(emotion);
         });
     </script>
