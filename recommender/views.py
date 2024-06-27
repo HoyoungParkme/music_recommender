@@ -8,7 +8,7 @@ from tensorflow.keras.models import load_model
 
 # 감정 예측 모델 로드
 model = load_model(settings.MODEL_PATH)
-emotion_labels = ['분노', '당황', '불안', '기쁨', '슬픔', '상처', '평범']  # 수정된 감정 라벨
+emotion_labels = ['분노', '당황', '불안', '기쁨', '슬픔', '상처', '평범'] 
 
 def index(request):
     return render(request, 'index.html')
@@ -40,7 +40,7 @@ def capture_face(request):
 
         # 모델 입력 형태로 변환
         face_img = rgb_img.astype('float32') / 255.0
-        face_img = np.expand_dims(face_img, axis=0)  # (1, 224, 224, 3)
+        face_img = np.expand_dims(face_img, axis=0) 
 
         # 감정 예측 수행
         predictions = model.predict(face_img)
@@ -52,5 +52,5 @@ def capture_face(request):
 def my_emotions(request):
     emotion = request.GET.get('emotion', 'unknown')
     image_path = request.GET.get('image_path', '')
-    emotion_labels = ['분노', '당황', '불안', '기쁨', '슬픔', '상처', '평범']  # 감정 라벨
+    emotion_labels = ['분노', '당황', '불안', '기쁨', '슬픔', '상처', '평범']  
     return render(request, 'my_emotions.html', {'emotion': emotion, 'emotion_labels': emotion_labels, 'image_path': image_path})

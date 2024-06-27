@@ -72,7 +72,7 @@
         }
         .navigation-links {
             margin-top: 20px;
-            margin-bottom: 30px; /* 아래 간격 조정 */
+            margin-bottom: 30px; 
             display: flex;
             justify-content: center;
             gap: 15px;
@@ -156,7 +156,7 @@
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
             return {
-                emotion: params.get('emotion') || '기쁨', // Default to '기쁨' if no emotion is found
+                emotion: params.get('emotion') || '기쁨', 
                 imagePath: params.get('image_path') || '{{ image_path }}'
             };
         }
