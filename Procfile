@@ -1,1 +1,0 @@
-web: gunicorn music_recommender.wsgi
