@@ -86,13 +86,14 @@
     </style>
 </head>
 <body>
+    {% load static %}
     <div class="container">
         <div class="nav-link">
-            <a href="index.html">Home</a>
+            <a href="{% url 'index' %}">Home</a>
         </div>
         <h1>Face Scan</h1>
         <div class="project">
-            <img src="static/example_face_recognition.png" alt="Face Recognition Example">
+            <img src="{% static 'example_face_recognition.png' %}" alt="Face Recognition Example">
             <div class="project-title">
                 <span>사용방법</span>
             </div>
@@ -127,7 +128,7 @@
             var left = (screen.width - width) / 2;
             var top = (screen.height - height) / 2;
             var features = `width=${width},height=${height},top=${top},left=${left}`;
-            window.open("camera_window.html", "CameraWindow", features);
+            window.open("{% url 'camera_window' %}", "CameraWindow", features);
         }
 
         function goToMyEmotions() {
@@ -135,7 +136,7 @@
             const emotion = urlParams.get('emotion');
             const image_path = urlParams.get('image_path');
             if (emotion && image_path) {
-                window.location.href = "my_emotions.html?emotion=" + emotion + "&image_path=" + image_path;
+                window.location.href = "{% url 'my_emotions' %}?emotion=" + emotion + "&image_path=" + image_path;
             } else {
                 alert('감정 인식 결과가 없습니다. 다시 시도해주세요.');
             }

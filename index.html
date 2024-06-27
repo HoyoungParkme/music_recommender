@@ -70,8 +70,23 @@
 </head>
 <body>
     <div class="container">
+        {% load static %}
         <h1>Emotion Based Music Recommender</h1>
         <p>이 사이트는 얼굴 인식을 통해 감정을 분석하고, 그에 맞는 노래를 추천해주는 사이트입니다.</p>
+        
+        <!--
+        image1: 
+        <a href="https://kr.freepik.com/free-photo/asia-yeoja-miso-haengbog-han-eolgul-chosanghwa-keullojeueob_19140565.htm#fromView=search&page=1&position=0&uuid=e3d0bf71-5986-4b1f-8c44-db72533d3812">작가 rawpixel.com 출처 Freepik</a>
+        
+        image2: 
+        <a href="https://kr.freepik.com/free-photo/namseong-yong-palansaeg-banpal-tisyeocheu-psd-peuloto-taib_18836225.htm#fromView=search&page=1&position=4&uuid=e3d0bf71-5986-4b1f-8c44-db72533d3812">작가 rawpixel.com 출처 Freepik</a>
+        
+        image3: 
+        <a href="https://kr.freepik.com/free-photo/huin-byeog-e-pojeu-kkumkkuneun-usneun-ppalgan-meoli-sib-dae-sonyeoui-geunjeob_10731421.htm#fromView=search&page=4&position=7&uuid=e3d0bf71-5986-4b1f-8c44-db72533d3812">작가 cookie_studio 출처 Freepik</a>
+        
+        image4: 
+        <a href="https://kr.freepik.com/free-photo/nolansaeg-seutyudio-baegyeong-e-hangug-jeolm-eun-iui-jeolban-gil-i-chosanghwa-huin-syeocheue-namseong-model-uisimseuleobgo-salyeo-gipgo-simgaghae-boibnida-ingan-ui-gamjeong-pyojeong-ui-gaenyeom_12263780.htm#fromView=search&page=1&position=2&uuid=e3d0bf71-5986-4b1f-8c44-db72533d3812">작가 master1305 출처 Freepik</a>
+        -->
         
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="3000">
             <ol class="carousel-indicators">
@@ -82,16 +97,16 @@
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="static/image1.png" alt="First slide">
+                    <img src="{% static 'image1.png' %}" alt="First slide">
                 </div>
                 <div class="carousel-item">
-                    <img src="static/image2.png" alt="Second slide">
+                    <img src="{% static 'image2.png' %}" alt="Second slide">
                 </div>
                 <div class="carousel-item">
-                    <img src="static/image3.png" alt="Third slide">
+                    <img src="{% static 'image3.png' %}" alt="Third slide">
                 </div>
                 <div class="carousel-item">
-                    <img src="static/image4.png" alt="Fourth slide">
+                    <img src="{% static 'image4.png' %}" alt="Fourth slide">
                 </div>
             </div>
             <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -104,7 +119,7 @@
             </a>
         </div>
         
-        <a href="face_recognition.html" class="btn btn-primary">감성분석 하러가기</a>
+        <a href="{% url 'face_recognition' %}" class="btn btn-primary">감성분석 하러가기</a>
     </div>
 
     <footer>

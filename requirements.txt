@@ -1,4 +1,2 @@
-django
-gunicorn
-django-heroku
-psycopg2-binary
+Django==3.2.8
+google-api-python-client
