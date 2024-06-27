@@ -12,172 +12,101 @@
             background-color: #ffffff;
             margin: 0;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
         }
         .container {
             max-width: 800px;
             margin: auto;
-            text-align: center;
-            width: 100%;
         }
         h1 {
             color: #000;
             font-size: 2.8rem;
             font-weight: 700;
             margin-bottom: 20px;
+            text-align: center;
         }
-        .camera-frame {
+        .project {
+            margin-bottom: 40px;
+        }
+        .project img {
             width: 100%;
-            max-width: 800px;
-            height: calc(100vh - 250px);
+            height: auto;
             border: 1px solid #ddd;
             padding: 5px;
             background-color: #f9f9f9;
-            position: relative;
+        }
+        .project-title {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
+            margin-top: 10px;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #333;
         }
-        .camera-frame video {
+        .instructions {
+            text-align: left;
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #444;
+        }
+        .instructions ol {
+            padding-left: 20px;
+        }
+        .instructions ol li {
+            margin-bottom: 20px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
             width: 100%;
-            height: 100%;
-            border-radius: 8px;
+            margin-top: 40px;
         }
-        .face-box {
-            position: absolute;
-            border: 2px solid green;
-            width: 200px;
-            height: 200px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        footer p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        .nav-link {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .nav-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+        .nav-link a:hover {
+            text-decoration: underline;
         }
         .btn-container {
+            text-align: center;
             margin-top: 20px;
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-        }
-        .btn-hidden {
-            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Camera</h1>
-        <div class="camera-frame">
-            <video id="video" autoplay></video>
-            <div class="face-box"></div>
-            <div class="btn-container">
-                <button id="capture-btn" class="btn btn-primary btn-lg">캡처</button>
-                <button id="retake-btn" class="btn btn-secondary btn-lg btn-hidden">다시 찍기</button>
-                <button id="submit-btn" class="btn btn-success btn-lg btn-hidden">제출하기</button>
-            </div>
+        <div class="nav-link">
+            <a href="index.html">Home</a>
+        </div>
+        <h1>Camera Window</h1>
+        <div class="project">
+            <img src="/static/images/captured_image.jpg" alt="Captured Image">
+        </div>
+        <div class="btn-container">
+            <button class="btn btn-primary">Capture</button>
+            <button class="btn btn-secondary">Retry</button>
         </div>
     </div>
 
-    <script>
-        let stream;
-        let capturedImage;
-
-        function startCamera() {
-            const video = document.getElementById('video');
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: true }).then(mediaStream => {
-                    stream = mediaStream;
-                    video.srcObject = stream;
-                    video.play();
-                });
-            }
-        }
-
-        function captureImage() {
-            const video = document.getElementById('video');
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            capturedImage = canvas.toDataURL('image/jpeg');
-            
-            video.style.display = 'none';
-            const image = new Image();
-            image.src = capturedImage;
-            image.style.width = '100%';
-            document.querySelector('.camera-frame').appendChild(image);
-            
-            document.getElementById('capture-btn').classList.add('btn-hidden');
-            document.getElementById('retake-btn').classList.remove('btn-hidden');
-            document.getElementById('submit-btn').classList.remove('btn-hidden');
-        }
-
-        function retakeImage() {
-            const video = document.getElementById('video');
-            video.style.display = 'block';
-            const image = document.querySelector('.camera-frame img');
-            if (image) {
-                image.remove();
-            }
-
-            document.getElementById('capture-btn').classList.remove('btn-hidden');
-            document.getElementById('retake-btn').classList.add('btn-hidden');
-            document.getElementById('submit-btn').classList.add('btn-hidden');
-        }
-
-        function submitImage() {
-            const blob = dataURItoBlob(capturedImage);
-            const formData = new FormData();
-            formData.append('image', blob, 'captured_image.jpg');
-            
-            fetch("{% url 'capture_face' %}", {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('얼굴 인식 성공! 감정: ' + data.emotion);
-                    window.opener.location.href = "{% url 'my_emotions' %}?emotion=" + encodeURIComponent(data.emotion) + "&image_path=" + encodeURIComponent(data.image_path);
-                    window.close();
-                } else {
-                    alert('얼굴 인식 실패: ' + data.error);
-                    retakeImage();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('얼굴 인식 중 오류가 발생했습니다. 다시 시도해 주세요.');
-                retakeImage();
-            });
-        }
-
-        function dataURItoBlob(dataURI) {
-            const byteString = atob(dataURI.split(',')[1]);
-            const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-            const ab = new ArrayBuffer(byteString.length);
-            const ia = new Uint8Array(ab);
-            for (let i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
-            }
-            return new Blob([ab], { type: mimeString });
-        }
-
-        document.getElementById('capture-btn').addEventListener('click', captureImage);
-        document.getElementById('retake-btn').addEventListener('click', retakeImage);
-        document.getElementById('submit-btn').addEventListener('click', submitImage);
-        window.onload = startCamera;
-    </script>
+    <footer>
+        <p>
+            Copyright (C) 2024 박호영 all rights reserved. |
+            Email: hoyoungpark.ds@gmail.com |
+            GitHub: <a href="https://github.com/HoyoungParkme" target="_blank">https://github.com/HoyoungParkme</a>
+        </p>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
